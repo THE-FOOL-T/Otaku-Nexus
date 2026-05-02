@@ -56,7 +56,7 @@
   list-style: none;
   display: flex;
   align-items: center;
-  color:white;
+  color: white;
 }
 .nav-links li {
   margin-left: 2rem;
@@ -153,4 +153,68 @@
 
 .hidden {
   opacity: 1;
+}
+/* Bento Grid (About Section) */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.bento-item {
+  display: flex;
+  flex-direction: column;
+}
+.bento-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--surface-border);
+}
+.bento-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+.span-2 {
+  grid-column: span 2;
+}
+
+/*  Events Section  */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2.5rem;
+}
+.event-card {
+  border-top: 3px solid var(--neon-secondary);
+}
+.event-detail {
+  color: var(--neon-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+/* --- Team Section --- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  text-align: center;
+}
+.team-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.avatar {
+  width: 80px;
+  height: 80px;
+  background: var(--neon-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
