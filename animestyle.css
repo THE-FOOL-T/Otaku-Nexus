@@ -1,9 +1,12 @@
 /*  Global Styles & Typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Outfit:wght@500;700;900&display=swap');
 :root {
+  --bg-color: #0b0b0e;
   --surface-color: rgba(20, 20, 25, 0.65);
   --surface-border: rgba(255, 255, 255, 0.1);
   --neon-primary: #ff2a6d;
   --neon-secondary: #05d9e8;
+  --text-main: #ffffff;
   --text-muted: #b0b0c0;
 }
 * { 
@@ -11,14 +14,18 @@
   padding: 0; 
   box-sizing: border-box; 
 }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #0b0b0e;
-  color: white;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-main);
   line-height: 1.6;
   overflow-x: hidden;
 }
+
+h1, h2, h3, .logo-text { font-family: 'Outfit', sans-serif; }
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -65,6 +72,18 @@ body {
   font-size: 1.8rem;
   font-weight: 900;
 }
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--neon-secondary);
+  filter: drop-shadow(0 0 8px rgba(5, 217, 232, 0.6));
+  animation: spin 10s linear infinite;
+}
 .nav-links {
   list-style: none;
   display: flex;
@@ -79,11 +98,20 @@ body {
   color: var(--text-main);
   transition: 0.3s;
 }
+.nav-links a:hover {
+  color: var(--neon-secondary);
+  text-shadow: 0 0 8px rgba(5, 217, 232, 0.5);
+}
 .nav-btn {
   border: 1px solid var(--neon-primary);
   padding: 8px 20px;
   border-radius: 30px;
   color: var(--neon-primary) !important;
+}
+.nav-btn:hover {
+  background: var(--neon-primary);
+  color: white !important;
+  box-shadow: 0 0 15px rgba(255, 42, 109, 0.4);
 }
 #burger-mnu {
   display: none;
@@ -271,6 +299,37 @@ body {
   width: 100%;
   height: 100vh;
   z-index: -2;
+}
+
+.event-card h3 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+.badge-upcoming {
+  background-color: var(--neon-secondary);
+  color: black;
+  box-shadow: 0 0 15px rgba(5, 217, 232, 0.8);
+}
+.role {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.contact-link {
+  color: var(--neon-secondary);
+  text-decoration: none;
+  font-weight: bold;
+}
+.hidden {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.show {
+  opacity: 1;
+  transform: translateY(0);
 }
 .bg-slide {
   position: absolute;
