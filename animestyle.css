@@ -107,11 +107,20 @@ h1, h2, h3, .logo-text { font-family: 'Outfit', sans-serif; }
   padding: 8px 20px;
   border-radius: 30px;
   color: var(--neon-primary) !important;
+  transition: all 0.3s ease;
 }
 .nav-btn:hover {
   background: var(--neon-primary);
   color: white !important;
   box-shadow: 0 0 15px rgba(255, 42, 109, 0.4);
+}
+.nav-logout {
+  border-color: var(--neon-primary) !important;
+}
+.nav-logout:hover {
+  background: var(--neon-primary) !important;
+  color: white !important;
+  box-shadow: 0 0 15px rgba(255, 42, 109, 0.4) !important;
 }
 #burger-mnu {
   display: none;
@@ -155,15 +164,19 @@ h1, h2, h3, .logo-text { font-family: 'Outfit', sans-serif; }
   text-decoration: none;
   border-radius: 8px;
   font-weight: bold;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
 }
-.btn-primary {
+.btn-primary,
+.btn-secondary {
   background: var(--neon-primary);
   color: white;
 }
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  border: 1px solid var(--surface-border);
+  border: 1px solid transparent;
+}
+.btn:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(255, 42, 109, 0.18);
 }
 /* Glass Cards & Achievements */
 .glass-card {
