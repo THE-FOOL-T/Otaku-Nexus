@@ -11,6 +11,27 @@ if (isset($_GET['delete_event']) && isset($_SESSION['role'])) {
         exit;
     }
 }
+
+// --- NEW FEATURE: EVENT REGISTRATION HOOK ---
+if (isset($_POST['register_event']) && isset($_SESSION['user_id'])) {
+    $e_id = intval($_POST['event_id']);
+    $u_id = $_SESSION['user_id'];
+    
+    // INSERT IGNORE prevents crashing if they double-click
+    $reg_stmt = $pdo->prepare("INSERT IGNORE INTO event_registrations (event_id, user_id) VALUES (?, ?)");
+    $reg_stmt->execute([$e_id, $u_id]);
+    
+    header("Location: index.php#events");
+    exit;
+}
+
+// Fetch user's registered events to update button UI later
+$user_registrations = [];
+if (isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT event_id FROM event_registrations WHERE user_id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user_registrations = $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
 ?>
 
 <section class="hidden" id="home">
@@ -24,6 +45,7 @@ if (isset($_GET['delete_event']) && isset($_SESSION['role'])) {
         </div>
     </div>
 </section>
+
 
 <section id="achievements" class="container">
     <div class="section-header hidden">
@@ -56,6 +78,7 @@ if (isset($_GET['delete_event']) && isset($_SESSION['role'])) {
     </div>
 </section>
 
+<!-- RESTORED: BENTO GRID ACTIVITIES SECTION -->
 <section id="about" class="container">
     <div class="section-header hidden">
         <h2>Club <span class="neon-text">Activities</span></h2>
@@ -98,6 +121,7 @@ if (isset($_GET['delete_event']) && isset($_SESSION['role'])) {
     </div>
 </section>
 
+<!-- RESTORED: COMPLEX EVENT TIMELINE LOGIC -->
 <section id="events" class="container">
     <div class="section-header hidden">
         <h2>Event <span class="neon-text">Timeline</span></h2>
@@ -182,6 +206,28 @@ if (isset($_GET['delete_event']) && isset($_SESSION['role'])) {
                     </p>
 
                     <div style="margin-top: auto;">
+                        
+                        <!-- NEW FEATURE: Event Registration Button -->
+                        <?php if(isset($_SESSION['user_id'])): ?>
+                            <?php if(in_array($evt['id'], $user_registrations)): ?>
+                                <button disabled class="btn" style="background: var(--neon-secondary); color: #000; border: none; padding: 8px; width: 100%; border-radius: 4px; font-weight: bold; cursor: not-allowed; margin-bottom: 10px;">
+                                    Registered ✓
+                                </button>
+                            <?php elseif($current_time > $deadline_time || $status_text === "Expired"): ?>
+                                <button disabled class="btn" style="background: rgba(255,255,255,0.1); color: var(--text-muted); border: none; padding: 8px; width: 100%; border-radius: 4px; font-weight: bold; cursor: not-allowed; margin-bottom: 10px;">
+                                    Registration Closed
+                                </button>
+                            <?php else: ?>
+                                <form method="POST" style="margin-bottom: 10px;">
+                                    <input type="hidden" name="event_id" value="<?= $evt['id'] ?>">
+                                    <button type="submit" name="register_event" class="btn btn-primary" style="width: 100%; padding: 8px; font-size: 0.9rem; border: none; cursor: pointer;">
+                                        Join Event
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <!-- RESTORED: Admin Manual Delete Button -->
                         <?php 
                         $user_role = isset($_SESSION['role']) ? strtolower(str_replace('_', ' ', $_SESSION['role'])) : '';
                         if (in_array($user_role, ['admin', 'moderator'])): 

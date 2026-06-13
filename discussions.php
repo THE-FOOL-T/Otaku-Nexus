@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_comment'])) {
 <section class="container" style="padding-top: 10rem; min-height: 100vh;">
     <div class="section-header">
         <h2>Anime <span class="neon-text">Review Matrix</span></h2>
-        <p>Share and give  rating of anime</p>
+        <p>Share and give rating of anime</p>
     </div>
 
     <!-- CREATE NEW THREAD -->
@@ -64,12 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_comment'])) {
                 <label style="display:block; margin-bottom:0.5rem; color:var(--text-muted); font-size:0.9rem;">Anime Thumbnail Graphic:</label>
                 <input type="file" name="thumbnail" accept="image/*" required style="color:white;">
             </div>
-            <textarea name="review_text" placeholder="Write your full review details here..." rows="3" required style="padding:12px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--surface-border); border-radius:5px; font-family:inherit;"></textarea>
+            <textarea name="review_text" placeholder="Write your full review details here... You can use [spoiler]secret text[/spoiler]!" rows="3" required style="padding:12px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--surface-border); border-radius:5px; font-family:inherit;"></textarea>
             <button type="submit" class="btn btn-primary" style="align-self: flex-start; border:none; cursor:pointer;">Broadcast Thread</button>
         </form>
     </div>
 
-    <!-- PORTAL THREADS FEED -->
+    <!-- RESTORED: PORTAL THREADS FEED WITH WEIGHTED AVERAGE -->
     <div style="display:flex; flex-direction:column; gap:2.5rem; margin-bottom: 5rem;">
         <?php
         $threads = $pdo->query("SELECT d.*, u.username, u.role, u.rank_title FROM discussions d JOIN users u ON d.user_id = u.id ORDER BY d.created_at DESC")->fetchAll();
@@ -116,7 +116,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_comment'])) {
                                 <small style="color:var(--neon-secondary); font-size:1.15rem;">Rating</small>
                             </div>
                         </div>
-                        <p style="margin-top:1.5rem; color:#e0e0e0; line-height:1.6;"><?= htmlspecialchars($th['review_text']) ?></p>
+
+                        <!-- NEW FEATURE: Spoiler Parsing applied to review text -->
+                        <?php
+                            $safe_text = htmlspecialchars($th['review_text']);
+                            $parsed_text = preg_replace('/\[spoiler\](.*?)\[\/spoiler\]/is', '<span class="spoiler-box" onclick="this.classList.toggle(\'revealed\')">$1</span>', $safe_text);
+                            echo "<p style=\"margin-top:1.5rem; color:#e0e0e0; line-height:1.6;\">" . $parsed_text . "</p>";
+                        ?>
+                        
                         <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.5rem;">
                             Thread started by: <strong><?= htmlspecialchars($th['username']) ?></strong> (<?= $th['rank_title'] ?>)
                         </div>
@@ -142,7 +149,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_comment'])) {
                                         <span style="color:yellow; font-weight:bold;">⭐ Rating: <?= $cm['user_rating'] ?>/10</span>
                                     <?php endif; ?>
                                 </div>
-                                <p style="font-size:0.9rem; color:#ccc;"><?= htmlspecialchars($cm['comment_text']) ?></p>
+
+                                <!-- NEW FEATURE: Spoiler Parsing applied to comment text -->
+                                <?php
+                                    $safe_comment = htmlspecialchars($cm['comment_text']);
+                                    $parsed_comment = preg_replace('/\[spoiler\](.*?)\[\/spoiler\]/is', '<span class="spoiler-box" onclick="this.classList.toggle(\'revealed\')">$1</span>', $safe_comment);
+                                    echo "<p style=\"font-size:0.9rem; color:#ccc;\">" . $parsed_comment . "</p>";
+                                ?>
                             </div>
                         <?php endforeach; ?>
 
@@ -150,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_comment'])) {
                         <form method="POST" style="margin-top:1.5rem; display:grid; grid-template-columns: 1fr 120px auto; gap:1rem;">
                             <input type="hidden" name="discussion_id" value="<?= $th['id'] ?>">
                             <input type="hidden" name="post_comment" value="1">
-                            <input type="text" name="comment_text" placeholder="Write a response comment..." required style="padding:8px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--surface-border); border-radius:4px;">
+                            <input type="text" name="comment_text" placeholder="Write a response... use [spoiler]text[/spoiler] if needed!" required style="padding:8px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--surface-border); border-radius:4px;">
                             <input type="number" name="user_rating" placeholder="Score (Optional)" min="1" max="10" style="padding:8px; background:rgba(0,0,0,0.5); color:white; border:1px solid var(--surface-border); border-radius:4px;">
                             <button type="submit" class="btn btn-secondary" style="padding:8px 16px; font-size:0.85rem; border:none; cursor:pointer;">Reply</button>
                         </form>
